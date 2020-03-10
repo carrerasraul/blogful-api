@@ -18,11 +18,26 @@ app.use(cors())
 
 app.get('/articles', (req, res, next) => {
     const knexInstance = req.app.get('db')
-    ArticlesService.getAllArticles(knex)
+    ArticlesService.getAllArticles(knexInstance)
     .then(articles => {
         res.json(articles)
     })
     .catch(next)
+})
+
+app.get('/articles/:article_id', (req, res, next) => {
+    const knexInstance = req.app.get('db')
+    ArticlesService.getById(knexInstance, req.params.articles_id)
+        .then(article => {
+            res.json({
+                id: article.id,
+                title: article.title,
+                style: article.style,
+                content: article.content,
+                date_published: new Date(article.date_published),
+            })
+        })
+        .catch(next)
 })
 
 app.get('/', (req, res) => {
